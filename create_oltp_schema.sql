@@ -279,3 +279,63 @@ FOR EACH ROW BEGIN
   SET NEW.tbl_last_dt = CURRENT_TIMESTAMP();
 END$$
 DELIMITER ;
+
+
+USE awesomeinc;
+CREATE TABLE js_order_product_history AS
+SELECT *
+FROM js_order_product
+WHERE 1 = 2;     -- creates empty table with same columns
+
+ALTER TABLE js_order_product_history
+ADD CONSTRAINT pk_js_order_product_history
+PRIMARY KEY (order_id, product_id);
+
+
+DELIMITER $$
+
+CREATE TRIGGER trg_js_order_product_del
+BEFORE DELETE ON js_order_product
+FOR EACH ROW
+BEGIN
+    -- Insert the row being deleted into the history table
+    INSERT INTO js_order_product_history
+    SELECT *
+    FROM js_order_product
+    WHERE order_id = OLD.order_id
+      AND product_id = OLD.product_id;
+
+    -- Update timestamp in the history table
+    UPDATE js_order_product_history
+    SET tbl_last_dt = CURRENT_TIMESTAMP()
+    WHERE order_id = OLD.order_id
+      AND product_id = OLD.product_id;
+END$$
+
+DELIMITER ;
+
+select * from  js_order_product;
+
+DELETE FROM js_order_product
+WHERE order_id = 1 AND product_id = 1;
+
+SELECT *
+FROM js_order_product_history
+WHERE order_id = 1 AND product_id = 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
