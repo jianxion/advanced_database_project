@@ -1,0 +1,41 @@
+OPTIONS (SKIP=0)
+LOAD DATA
+CHARACTERSET UTF8
+INFILE '/media/sf_STUDENT/js_fact_order_line_inc.csv'
+BADFILE '/media/sf_STUDENT/js_stg_fact_order_line_inc.bad'
+DISCARDFILE '/media/sf_STUDENT/js_stg_fact_order_line_inc.dsc'
+INTO TABLE JS_STG_FACT_ORDER_LINE
+TRUNCATE
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+TRAILING NULLCOLS
+(
+  order_code,
+  order_date       DATE "YYYY-MM-DD",
+  ship_date        DATE "YYYY-MM-DD",
+  customer_code,
+  product_code,
+  region,
+  country,
+  state,
+  city,
+  postal_code,
+  market,
+  order_priority,
+  ship_mode,
+  quantity         INTEGER EXTERNAL,
+  discount         DECIMAL EXTERNAL,
+  sales            DECIMAL EXTERNAL,
+  profit           DECIMAL EXTERNAL,
+  shipping_cost    DECIMAL EXTERNAL,
+  returned_flag,
+  src_tbl_last_dt  DATE "YYYY-MM-DD HH24:MI:SS"
+)
+
+
+
+[oracle@localhost ~]$ cd /media/sf_STUDENT/
+[oracle@localhost sf_STUDENT]$ ls
+js_dim_customer.csv      js_fact_order_line.csv
+js_dim_product.csv       JS_STG_DIM_CUSTOMER_4491.log
+js_dim_ship_address.csv  js_stg_fact_order_line.ctl
+[oracle@localhost sf_STUDENT]$ sqlldr userid=DWS/dws@freepdb1 control=js_stg_fact_order_line_inc.ctl
