@@ -36,9 +36,6 @@ EXCEPTION
 END;
 /
 
-select * from js_dim_customer;
-select count(*) from js_dim_customer;
-
 
 CREATE OR REPLACE PROCEDURE load_merge_dim_product IS
     err_code NUMBER;
@@ -211,7 +208,6 @@ BEGIN
       a.order_date_id   = b.order_date_id,
       a.ship_date_id    = b.ship_date_id,
       a.customer_id     = b.customer_id,
-      -- a.product_id   = b.product_id,  -- ❌ cannot update column used in ON
       a.address_id      = b.address_id,
       a.quantity        = b.quantity,
       a.discount        = b.discount,
@@ -240,7 +236,7 @@ BEGIN
       tbl_last_dt
     )
     VALUES (
-      js_fact_order_line_seq.NEXTVAL,    -- or omit if FACT_ID is IDENTITY
+      js_fact_order_line_seq.NEXTVAL,
       b.order_code,
       b.order_priority,
       b.ship_mode,
@@ -307,28 +303,6 @@ SELECT * FROM JS_DIM_PRODUCT;
 SELECT * FROM JS_DIM_SHIP_ADDRESS;
 SELECT * FROM JS_DIM_DATE;
 
-
--- incremental etl--
-
-select count(*) from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High';
-
-select * from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Hamilton';
-
-select * from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Geraldton';
-
-
--- ensure these two matches--
-select * from js_fact_order_line a
-join js_dim_ship_address b on a.address_id = b.address_id
-where b.region = 'Oceania' AND a.order_priority = 'High' and b.city = 'Geraldton';
-
-select * from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Geraldton';
-
-select * from js_fact_order_line;
 
 
 

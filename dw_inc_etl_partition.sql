@@ -1,29 +1,11 @@
---full ETL, and then incremental ETL.
---One partition table on data warehouse.
---and one history table into OLTP.
-
-
-
-
 -- incremental etl--
 
 select count(*) from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High';
+where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Hamilton';
 
 select * from js_stg_fact_order_line a
 where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Hamilton';
 
-select * from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Geraldton';
-
-
--- ensure these two matches--
-select * from js_fact_order_line a
-join js_dim_ship_address b on a.address_id = b.address_id
-where b.region = 'Oceania' AND a.order_priority = 'High' and b.city = 'Geraldton';
-
-select * from js_stg_fact_order_line a
-where a.region = 'Oceania' AND a.order_priority = 'High' and a.city = 'Geraldton';
 
 -- partition table--
 DROP TABLE JS_FACT_ORDER_LINE CASCADE CONSTRAINTS;

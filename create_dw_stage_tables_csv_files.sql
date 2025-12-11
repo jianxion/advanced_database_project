@@ -1,11 +1,10 @@
 use awesomeinc;
 
-
 CREATE OR REPLACE VIEW vw_dw_dim_customer AS
 SELECT
   c.customer_id,
   c.customer_code,
-  c.customer_name,            -- already full name in your OLTP
+  c.customer_name,
   s.segment_name,
   NOW() AS tbl_last_dt
 FROM js_customer c
@@ -27,7 +26,7 @@ JOIN js_category    c  ON c.category_id  = sc.category_id;
 
 CREATE OR REPLACE VIEW vw_dw_dim_ship_address AS
 SELECT
-  g.geo_id          AS address_id,   -- your DW uses address_id; OLTP table is js_geo
+  g.geo_id          AS address_id,
   g.region, g.country, g.state, g.city, g.postal_code, g.market,
   NOW() AS tbl_last_dt
 FROM js_geo g;
